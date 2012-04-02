@@ -1,12 +1,3 @@
-function merge(a, b) {
-	if (a && b) {
-		for (var key in b) {
-			a[key] = b[key];
-		}
-	}
-	return a;
-}
-
 var dotColor = {
 	active: '#999',
 	inactive: '#555'
@@ -14,9 +5,10 @@ var dotColor = {
 
 var activeViewIndex = 0;
 function changeActive(view, length, newIndex){
-	if(view.children){
-		view.children[activeViewIndex].borderColor = dotColor.inactive;
-		view.children[newIndex].borderColor = dotColor.active;
+	if(view.children && view.children.length>0){
+		var children = view.getChildren();
+		children[activeViewIndex].setBorderColor(dotColor.inactive)
+		children[newIndex].setBorderColor(dotColor.active);
 		activeViewIndex = newIndex;
 	}else{
 		for(var i=0; i<length; i++){
