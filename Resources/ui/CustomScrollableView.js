@@ -29,40 +29,47 @@ function changeActive(view, length, newIndex){
 
 function createScrollableView(o) {
 	o = o || {};
-	o.showPagingControl = false; // hide default paging control 
 	o.views = o.views || [];
 	o.top = o.top || 0;
 	o.bottom = o.bottom || 0;
 
-	// Create paging control
-	var pagingControlView = Ti.UI.createView({
-		layout: "horizontal",
-		height: 20,
-		width: "auto"
-	});
+	if(o.showPagingControl){
+		// Create paging control
+		var pagingControlView = Ti.UI.createView({
+			layout: "horizontal",
+			height: 20,
+			width: "auto"
+		});
+		
+		// Set default paging control position	
+		var pos = o.pagingControlPosition;
+		pos = pos=='top' || pos=='bottom' ? pos : 'bottom';  
+		o.pagingControlPosition = pos;
+		
+		// Determin position for paging control
+		pagingControlView[pos] = o[pos];
+		o[pos] += pagingControlView.height + (pos=='bottom' ? 10 : 0);
+		
+		// Set initial paging control
+		changeActive(pagingControlView, o.views.length, 0);
+		
+		// Create scrollable view
+		o.showPagingControl = false;
+		var view = Ti.UI.createScrollableView(o);
+		view.addEventListener('scroll', function(e){
+			changeActive(pagingControlView, o.views.length, e.currentPage);
+		});
+		
+		// Create container including scrollable view and page control
+		var container = Ti.UI.createView();
+		container.add(view);
+		container.add(pagingControlView);
+	}else{
+		o.showPagingControl = false;
+		var view = Ti.UI.createScrollableView(o);
+		var container = view;
+	}
 	
-	// Set default paging control position	
-	var pos = o.pagingControlPosition;
-	pos = pos=='top' || pos=='bottom' ? pos : 'bottom';  
-	o.pagingControlPosition = pos;
-	
-	// Determin position for paging control
-	pagingControlView[pos] = o[pos];
-	o[pos] += pagingControlView.height + (pos=='bottom' ? 10 : 0);
-	
-	// Set initial paging control
-	changeActive(pagingControlView, o.views.length, 0);
-	
-	// Create scrollable view
-	var view = Ti.UI.createScrollableView(o);
-	view.addEventListener('scroll', function(e){
-		changeActive(pagingControlView, o.views.length, e.currentPage);
-	});
-	
-	// Create container including scrollable view and page control
-	var container = Ti.UI.createView();
-	container.add(view);
-	container.add(pagingControlView);
 	
 	return container;
 }

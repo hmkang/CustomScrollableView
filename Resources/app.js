@@ -26,6 +26,7 @@ var view = Custom.createScrollableView({
 	borderWidth: 5,
 	borderRadius: 10,
 	borderColor: '#aaa',
+	showPagingControl: true,
 	pagingControlPosition: 'bottom'
 });
 
